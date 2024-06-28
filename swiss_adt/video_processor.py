@@ -1,6 +1,5 @@
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from PIL import Image
-import streamlit as st
 import sys
 import numpy as np
 import logging
@@ -26,18 +25,9 @@ def save_subclip(input_file, output_file, start_time_seconds, end_time_seconds):
         subclip.write_videofile(output_file, codec="libx264", audio_codec="aac")
 
 
-def extract_frames(video, num_frames=None, nth_frame=None):
-    # Check if the video file is uploaded
-    if video is None:
-        st.error("Please upload a video file.")
-        return
-    
-    # save video to disk
-    with open("video.mp4", "wb") as f:
-        f.write(video.read())
-    
+def extract_frames(video_path, num_frames=None, nth_frame=None):
     # Open the video file
-    video_clip = VideoFileClip("video.mp4")
+    video_clip = VideoFileClip(video_path, audio=False)
 
     # Get the duration of the video
     duration = video_clip.duration

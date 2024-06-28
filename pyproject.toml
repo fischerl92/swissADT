@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "swiss-adt"
+version = "0.0.1"
+authors = [
+ { name="Lukas Fischer", email="fischerl@cl.uzh.ch" }, 
+ ]
+description = "Swiss ADT"
+readme = "README.md"
+classifiers = [ ]
+requires-python = ">=3.9"
+dependencies = [ ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["cgdetr", "swiss_adt"]
