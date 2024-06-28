@@ -1,8 +1,20 @@
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from PIL import Image
 import sys
+from typing import Iterable
+import cv2
 import numpy as np
 import logging
+import base64
+
+
+def encode_images(image_arrays: Iterable[np.ndarray]) -> Iterable[str]:
+    # Convert the numpy array to bytes
+    for image_array in image_arrays:
+        _, buffer = cv2.imencode('.png', image_array)
+        image_bytes = buffer.tobytes()
+        # Encode the bytes to base64
+        yield base64.b64encode(image_bytes).decode('utf-8')
 
 
 def save_subclip(input_file, output_file, start_time_seconds, end_time_seconds):

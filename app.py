@@ -1,8 +1,11 @@
 import streamlit as st
+import logging
 import os
 
 from cgdetr import CGDETRPredictor
-from swiss_adt import save_subclip, extract_frames
+from swiss_adt import save_subclip, extract_frames, Translator
+
+api_key = os.environ.get("OPENAI_API_KEY")
 
 if __name__ == "__main__":
     # Set the title of the app
@@ -26,8 +29,8 @@ if __name__ == "__main__":
         num_frames = st.number_input("Enter the number of frames to extract:", min_value=1, max_value=20, value=4)
 
 
-    # Get Moment
-    if st.button("Get Moment"):
+    # Translate the audio description
+    if st.button("Translate Audio Description"):
         if not video_file or not audio_description:
             st.error("Please upload a video file and enter the audio description.")
             st.stop()
@@ -69,7 +72,7 @@ if __name__ == "__main__":
         len_frames = len(frames)
 
         st.divider()
-        st.caption(f"Sending the following frames to the model for translation.")
+        st.caption(f"Sending the following frames to the model for translation:")
 
         if len_frames < 6:
             st.image(frames, width=200)
@@ -77,4 +80,11 @@ if __name__ == "__main__":
             for i in range(0, len_frames, 6):
                 st.image(frames[i:i + 6], width=200)
 
-        
+
+        # Translate the audio description
+        st.divider()
+        st.caption("Translating the audio description...")
+        translator = Translator(api_key=api_key)
+        logging.info(f"Api Key: {api_key}")
+        translated_description = translator.translate_segment(text=audio_description, images=frames, source_language="EN", target_language="FR")
+        st.success(f"Translated Description: {translated_description}")

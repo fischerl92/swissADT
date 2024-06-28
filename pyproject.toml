@@ -12,7 +12,21 @@ description = "Swiss ADT"
 readme = "README.md"
 classifiers = [ ]
 requires-python = ">=3.9"
-dependencies = [ ]
+dependencies = [ 
+    "opencv-python==4.10.0.84",
+    "backoff==2.2.1",
+    "regex==2024.5.15",
+    "ftfy==6.2.0",
+    "ffmpeg-python==0.2.0",
+    "moviepy==1.0.3",
+    "numpy==2.0.0",
+    "openai==1.35.7",
+    "pillow==10.3.0",
+    "scipy==1.14.0",
+    "torch==2.3.1",
+    "torchvision==0.18.1",
+    "streamlit==1.36.0",
+    ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["cgdetr", "swiss_adt"]
