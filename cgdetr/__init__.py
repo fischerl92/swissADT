@@ -1,1 +1,1 @@
-from .moment_retrieval import save_subclip, CGDETRPredictor
+from .moment_retrieval import CGDETRPredictor
