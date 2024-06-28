@@ -15,16 +15,24 @@ import torch.nn.functional as F
 
 from swiss_adt import save_subclip
 
+
 class CGDETRPredictor:
-    def __init__(self, ckpt_path=None, clip_model_name_or_path="ViT-B/32", device="cuda"):
+    def __init__(
+        self, ckpt_path=None, clip_model_name_or_path="ViT-B/32", device="cuda"
+    ):
         if ckpt_path is None:
-            ckpt_path = os.path.join(os.path.dirname(__file__), "qvhighlights_onlyCLIP.ckpt")
+            ckpt_path = os.path.join(
+                os.path.dirname(__file__), "qvhighlights_onlyCLIP.ckpt"
+            )
         self.clip_len = 2  # seconds
         self.device = device
         logging.info("Loading feature extractors...")
         self.feature_extractor = ClipFeatureExtractor(
-            framerate=1/self.clip_len, size=224, centercrop=True,
-            model_name_or_path=clip_model_name_or_path, device=device
+            framerate=1 / self.clip_len,
+            size=224,
+            centercrop=True,
+            model_name_or_path=clip_model_name_or_path,
+            device=device,
         )
         logging.info("Loading trained CG-DETR model...")
         self.model = build_inference_model(ckpt_path).to(self.device)
@@ -46,13 +54,16 @@ class CGDETRPredictor:
         tef_ed = tef_st + 1.0 / n_frames
         tef = torch.stack([tef_st, tef_ed], dim=1).to(self.device)  # (n_frames, 2)
         video_feats = torch.cat([video_feats, tef], dim=1)
-        assert n_frames <= 75, "The positional embedding of this pretrained CGDETR only support video up " \
-                               "to 150 secs (i.e., 75 2-sec clips) in length"
+        assert n_frames <= 75, (
+            "The positional embedding of this pretrained CGDETR only support video up "
+            "to 150 secs (i.e., 75 2-sec clips) in length"
+        )
         video_feats = video_feats.unsqueeze(0).repeat(n_query, 1, 1)  # (#text, T, d)
         video_mask = torch.ones(n_query, n_frames).to(self.device)
         query_feats = self.feature_extractor.encode_text(query_list)  # #text * (L, d)
         query_feats, query_mask = pad_sequences_1d(
-            query_feats, dtype=torch.float32, device=self.device, fixed_length=None)
+            query_feats, dtype=torch.float32, device=self.device, fixed_length=None
+        )
         query_feats = F.normalize(query_feats, dim=-1, eps=1e-5)
         model_inputs = dict(
             src_vid=video_feats,
@@ -60,14 +71,18 @@ class CGDETRPredictor:
             src_txt=query_feats,
             src_txt_mask=query_mask,
             vid=None,
-            qid=None
+            qid=None,
         )
 
         # decode outputs
         outputs = self.model(**model_inputs)
         # #moment_queries refers to the positional embeddings in CGDETR's decoder, not the input text query
-        prob = F.softmax(outputs["pred_logits"], -1)  # (batch_size, #moment_queries=10, #classes=2)
-        scores = prob[..., 0]  # * (batch_size, #moment_queries)  foreground label is 0, we directly take it
+        prob = F.softmax(
+            outputs["pred_logits"], -1
+        )  # (batch_size, #moment_queries=10, #classes=2)
+        scores = prob[
+            ..., 0
+        ]  # * (batch_size, #moment_queries)  foreground label is 0, we directly take it
         pred_spans = outputs["pred_spans"]  # (bsz, #moment_queries, 2)
 
         # compose predictions
@@ -77,8 +92,12 @@ class CGDETRPredictor:
             spans = span_cxw_to_xx(spans) * video_duration
             # # (#queries, 3), [st(float), ed(float), score(float)]
             cur_ranked_preds = torch.cat([spans, score[:, None]], dim=1).tolist()
-            cur_ranked_preds = sorted(cur_ranked_preds, key=lambda x: x[2], reverse=True)
-            cur_ranked_preds = [[float(f"{e:.4f}") for e in row] for row in cur_ranked_preds]
+            cur_ranked_preds = sorted(
+                cur_ranked_preds, key=lambda x: x[2], reverse=True
+            )
+            cur_ranked_preds = [
+                [float(f"{e:.4f}") for e in row] for row in cur_ranked_preds
+            ]
             cur_query_pred = dict(
                 query=query_list[idx],  # str
                 vid=video_path,
@@ -95,10 +114,8 @@ if __name__ == "__main__":
     logging.info("Build models...")
 
     cg_detr_predictor = CGDETRPredictor(
-        ckpt_path="qvhighlights_onlyCLIP.ckpt",
-        device="cpu"
+        ckpt_path="qvhighlights_onlyCLIP.ckpt", device="cpu"
     )
-
 
     with open("../example/example.jsonl", "r") as file:
         for line in file:
@@ -107,9 +124,14 @@ if __name__ == "__main__":
             video_path = segment["video"]
             query_text_list = [segment["audio_description"]]
 
-            logging.info(f"For video: {video_path}\n find moment for query: {query_text_list}")
+            logging.info(
+                f"For video: {video_path}\n find moment for query: {query_text_list}"
+            )
             predictions = cg_detr_predictor.localize_moment(
-                video_path=video_path, query_list=query_text_list)
-            
+                video_path=video_path, query_list=query_text_list
+            )
+
             moment = predictions[0]["pred_relevant_windows"][0]
-            save_subclip(video_path, "../example/moment_ruedi.mp4", moment[0], moment[1])
+            save_subclip(
+                video_path, "../example/moment_ruedi.mp4", moment[0], moment[1]
+            )
