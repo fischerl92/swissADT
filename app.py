@@ -62,13 +62,14 @@ if __name__ == "__main__":
         with open(vid_file, "wb") as f:
             f.write(video_file.getbuffer())
 
-        # Find the moment
-        model = CGDETRPredictor(device="cpu")
-        predictions = model.localize_moment(
-            video_path=vid_file, query_list=[audio_description]
-        )
-        moment = predictions[0]["pred_relevant_windows"][0]
-        save_subclip(vid_file, moment_file, moment[0], moment[1])
+        with st.spinner("Retrieve moment ..."):
+            # Find the moment
+            model = CGDETRPredictor(device="cpu")
+            predictions = model.localize_moment(
+                video_path=vid_file, query_list=[audio_description]
+            )
+            moment = predictions[0]["pred_relevant_windows"][0]
+            save_subclip(vid_file, moment_file, moment[0], moment[1])
 
         # Display the moment
         st.divider()
@@ -99,12 +100,12 @@ if __name__ == "__main__":
 
         # Translate the audio description
         st.divider()
-        st.caption("Translating the audio description...")
-        translator = Translator(api_key=api_key)
-        translated_description = translator.translate_segment(
-            text=audio_description,
-            images=encode_images(frames),
-            source_language=source_language,
-            target_language=target_language,
-        )
-        st.success(f"Translated Description: {translated_description}")
+        with st.spinner("Translating the audio description..."):
+            translator = Translator(api_key=api_key)
+            translated_description = translator.translate_segment(
+                text=audio_description,
+                images=encode_images(frames),
+                source_language=source_language,
+                target_language=target_language,
+            )
+        st.success(f"Translated AD: {translated_description}")

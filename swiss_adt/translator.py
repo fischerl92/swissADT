@@ -56,10 +56,7 @@ class Translator:
         text = (
             f"Translate the following audio description for the frames of this video from {source_language} to"
             f" {target_language}. Respond with the translation only. If the audio description does not match the "
-            f"image, please ignore "
-            f"the "
-            f"image. "
-            f"Respond with a translation only. This is the audio description to translate: \n {text}"
+            f"image, please ignore the image. Respond with a translation only. This is the audio description to translate: \n {text}"
         )
 
         headers = {
