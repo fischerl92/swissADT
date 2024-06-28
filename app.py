@@ -3,7 +3,7 @@ import logging
 import os
 
 from cgdetr import CGDETRPredictor
-from swiss_adt import save_subclip, extract_frames, Translator
+from swiss_adt import save_subclip, extract_frames, Translator, encode_images
 
 api_key = os.environ.get("OPENAI_API_KEY")
 
@@ -17,8 +17,12 @@ if __name__ == "__main__":
     # Get the Audio description
     audio_description = st.text_input("Enter the audio description")
 
+    # Select source and target languages
+    source_language = st.selectbox("Select the source language", ["EN"], help="Only English is supported at the moment")
+    target_language = st.selectbox("Select the target language", ["FR", "DE", "IT"])
+
     # Select if user wants number of frames or everny nth frame
-    option = st.radio("Select the type of extraction", ("Number of frames", "Every nth frame"))
+    option = st.radio("Select the type of extraction", ("Number of frames", "Every nth frame"), help="Number of frames will extract the specified number of frames (equally distributed) from the moment. Every nth frame will extract every nth frame from the moment, which results in variable number of frames.")
 
     if option == "Every nth frame":
         # Get the nth frame to extract
@@ -86,5 +90,5 @@ if __name__ == "__main__":
         st.caption("Translating the audio description...")
         translator = Translator(api_key=api_key)
         logging.info(f"Api Key: {api_key}")
-        translated_description = translator.translate_segment(text=audio_description, images=frames, source_language="EN", target_language="FR")
+        translated_description = translator.translate_segment(text=audio_description, images=encode_images(frames), source_language=source_language, target_language=target_language)
         st.success(f"Translated Description: {translated_description}")

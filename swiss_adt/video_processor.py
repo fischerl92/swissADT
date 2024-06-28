@@ -17,7 +17,7 @@ def encode_images(image_arrays: Iterable[np.ndarray]) -> Iterable[str]:
         yield base64.b64encode(image_bytes).decode('utf-8')
 
 
-def save_subclip(input_file, output_file, start_time_seconds, end_time_seconds):
+def save_subclip(input_file: str, output_file: str, start_time_seconds: float, end_time_seconds: float):
 
     # Open the video file
      with VideoFileClip(input_file, audio=False) as video_clip:
@@ -37,7 +37,7 @@ def save_subclip(input_file, output_file, start_time_seconds, end_time_seconds):
         subclip.write_videofile(output_file, codec="libx264", audio_codec="aac")
 
 
-def extract_frames(video_path, num_frames=None, nth_frame=None):
+def extract_frames(video_path: str, num_frames: int = None, nth_frame: int = None) -> Iterable[np.ndarray]:
     # Open the video file
     video_clip = VideoFileClip(video_path, audio=False)
 

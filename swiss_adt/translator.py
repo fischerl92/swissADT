@@ -5,8 +5,6 @@ import time
 
 logging.basicConfig(level=logging.INFO)
 
-from .video_processor import encode_images
-
 class ServerError(Exception):
     pass
 
@@ -25,7 +23,7 @@ class Translator:
         """Translate the audio description for the frames of a video from the source language to the target language.
         args: 
             text: str: The audio description to translate
-            images: list: A list of frames to send to the model
+            images: list[str]: A list of base64 encoded frames to send to the model
             source_language: str: The source language code
             target_language: str: The target language code
         return:
@@ -67,7 +65,7 @@ class Translator:
 
         logging.info(f"Sending request to OpenAI with payload (images not included): {payload}")
 
-        for img in encode_images(images):
+        for img in images:
             image = {
                 "type": "image_url",
                 "image_url": {
