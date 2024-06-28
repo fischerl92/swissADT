@@ -89,6 +89,5 @@ if __name__ == "__main__":
         st.divider()
         st.caption("Translating the audio description...")
         translator = Translator(api_key=api_key)
-        logging.info(f"Api Key: {api_key}")
         translated_description = translator.translate_segment(text=audio_description, images=encode_images(frames), source_language=source_language, target_language=target_language)
         st.success(f"Translated Description: {translated_description}")
