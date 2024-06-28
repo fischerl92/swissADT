@@ -6,14 +6,13 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from cg_detr.span_utils import generalized_temporal_iou, span_cxw_to_xx
+from .span_utils import generalized_temporal_iou, span_cxw_to_xx
 
-from cg_detr.matcher import build_matcher
-from cg_detr.transformer import build_transformer, TransformerEncoderLayer, TransformerEncoder
-from cg_detr.position_encoding import build_position_encoding
-from cg_detr.misc import accuracy
+from .matcher import build_matcher
+from .transformer import build_transformer, TransformerEncoderLayer, TransformerEncoder
+from .position_encoding import build_position_encoding
+from .misc import accuracy
 import numpy as np
-import copy
 
 def inverse_sigmoid(x, eps=1e-3):
     x = x.clamp(min=0, max=1)

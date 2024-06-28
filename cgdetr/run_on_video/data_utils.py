@@ -2,13 +2,13 @@ import torch
 import numpy as np
 import ffmpeg
 import math
-from run_on_video import clip
-
+import logging
+from .clip import *
 
 class ClipFeatureExtractor:
     def __init__(self, framerate=1/2, size=224, centercrop=True, model_name_or_path="ViT-B/32", device="cuda"):
         self.video_loader = VideoLoader(framerate=framerate, size=size, centercrop=centercrop)
-        print("Loading CLIP models")
+        logging.info("Loading CLIP models")
         self.clip_extractor, _ = clip.load(model_name_or_path, device=device, jit=False)
         self.tokenizer = clip.tokenize
         self.video_preprocessor = Preprocessing()
@@ -134,8 +134,8 @@ class VideoLoader:
             info = self._get_video_info(video_path)
             h, w = info["height"], info["width"]
         except Exception as e:
-            print(e)
-            print('ffprobe failed at: {}'.format(video_path))
+            logging.info(e)
+            logging.info('ffprobe failed at: {}'.format(video_path))
             return {'video': torch.zeros(1), 'input': video_path,
                     'info': {}}
         height, width = self._get_output_dim(h, w)
@@ -144,7 +144,7 @@ class VideoLoader:
             fps = self.framerate
             if duration > 0 and duration < 1/fps+0.1:
                 fps = 2/max(int(duration), 1)
-                print(duration, fps)
+                logging.info(duration, fps)
         except Exception:
             fps = self.framerate
         cmd = (

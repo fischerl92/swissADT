@@ -1,48 +1,32 @@
 import torch
 import json
 import logging
+import os
 
 # https://github.com/wjun0830/CGDETR.git
 # 99f110841615b786498d4a9f87afd5d665cd185f
 
-from run_on_video.data_utils import ClipFeatureExtractor
-from run_on_video.model_utils import build_inference_model
-from utils.tensor_utils import pad_sequences_1d
-from cg_detr.span_utils import span_cxw_to_xx
+from .run_on_video.data_utils import ClipFeatureExtractor
+from .run_on_video.model_utils import build_inference_model
+from .utils.tensor_utils import pad_sequences_1d
+from .cg_detr.span_utils import span_cxw_to_xx
 from moviepy.video.io.VideoFileClip import VideoFileClip
 import torch.nn.functional as F
 
-
-def save_subclip(input_file, output_file, start_time_seconds, end_time_seconds):
-
-    # Open the video file
-    video_clip = VideoFileClip(input_file, audio=False)
-
-    # Check if the end time is greater than the duration of the video
-    if end_time_seconds > video_clip.duration:
-        end_time_seconds = video_clip.duration
-
-    # Check if the start time is less than 0
-    if start_time_seconds < 0:
-        start_time_seconds = 0
-
-    # Extract subclip without including the timecode track
-    subclip = video_clip.subclip(start_time_seconds, end_time_seconds).without_audio()
-
-    # Write the subclip to the output file
-    subclip.write_videofile(output_file, codec="libx264", audio_codec="aac")
-
+from swiss_adt import save_subclip
 
 class CGDETRPredictor:
-    def __init__(self, ckpt_path, clip_model_name_or_path="ViT-B/32", device="cuda"):
+    def __init__(self, ckpt_path=None, clip_model_name_or_path="ViT-B/32", device="cuda"):
+        if ckpt_path is None:
+            ckpt_path = os.path.join(os.path.dirname(__file__), "qvhighlights_onlyCLIP.ckpt")
         self.clip_len = 2  # seconds
         self.device = device
-        print("Loading feature extractors...")
+        logging.info("Loading feature extractors...")
         self.feature_extractor = ClipFeatureExtractor(
             framerate=1/self.clip_len, size=224, centercrop=True,
             model_name_or_path=clip_model_name_or_path, device=device
         )
-        print("Loading trained CG-DETR model...")
+        logging.info("Loading trained CG-DETR model...")
         self.model = build_inference_model(ckpt_path).to(self.device)
 
     @torch.no_grad()
@@ -108,7 +92,7 @@ class CGDETRPredictor:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    print("Build models...")
+    logging.info("Build models...")
 
     cg_detr_predictor = CGDETRPredictor(
         ckpt_path="qvhighlights_onlyCLIP.ckpt",
