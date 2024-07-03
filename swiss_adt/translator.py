@@ -23,7 +23,7 @@ class Translator:
         self,
         api_key,
         model="gpt-4o",
-        request_per_second=2,
+        request_per_second=-1,
         language_code=DEFAULT_LANGUAGE_CODES,
     ):
         self.api_key = api_key
@@ -90,7 +90,8 @@ class Translator:
             raise ServerError(f"Error in response: {response.json()}")
         logging.info(f"Received response from OpenAI: {response.json()}")
 
-        time.sleep(1 / self.requests_per_second)
+        if self.requests_per_second > 0:
+            time.sleep(1 / self.requests_per_second)
 
         translation = response.json()["choices"][0]["message"]["content"]
         return translation
