@@ -12,7 +12,22 @@ pip install -e .
 ## Run Demo
 
 ```
-streamlit run app.py
+OPENAI_API_KEY=<your_key> streamlit run app.py
+```
+
+
+## Docker
+
+Build the docker image:
+
+```
+docker build --platform linux/amd64 -t swiss-adt .
+```
+
+Run demo:
+
+```
+OPENAI_API_KEY=<your_key> docker compose up
 ```
 
 ## ☑️ LICENSE
