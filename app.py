@@ -4,12 +4,21 @@ import os
 from cgdetr import CGDETRPredictor
 from swiss_adt import save_subclip, extract_frames, Translator, encode_images
 
-api_key = os.environ.get("OPENAI_API_KEY")
-
 
 @st.cache_resource
 def get_moment_retriever():
     return CGDETRPredictor(device="cpu")
+
+
+@st.cache_resource
+def get_translator():
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        st.error(
+            "Please set the OPENAI_API_KEY environment variable to use the translation feature."
+        )
+        st.stop()
+    return Translator(api_key=api_key)
 
 
 if __name__ == "__main__":
@@ -109,14 +118,8 @@ if __name__ == "__main__":
         # Translate the audio description
         st.divider()
 
-        if not api_key:
-            st.error(
-                "Please set the OPENAI_API_KEY environment variable to use the translation feature."
-            )
-            st.stop()
-
         with st.spinner("Translating the audio description..."):
-            translator = Translator(api_key=api_key)
+            translator = get_translator()
             translated_description = translator.translate_segment(
                 text=audio_description,
                 images=encode_images(frames),
