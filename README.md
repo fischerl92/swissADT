@@ -21,7 +21,7 @@ OPENAI_API_KEY=<your_key> streamlit run app.py
 Build the docker image:
 
 ```
-docker build --platform linux/amd64 -t swiss-adt .
+docker build -t swiss-adt .
 ```
 
 Run demo:

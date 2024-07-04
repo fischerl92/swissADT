@@ -1,5 +1,4 @@
 import streamlit as st
-import logging
 import os
 
 from cgdetr import CGDETRPredictor
@@ -7,12 +6,21 @@ from swiss_adt import save_subclip, extract_frames, Translator, encode_images
 
 api_key = os.environ.get("OPENAI_API_KEY")
 
+
+@st.cache_resource
+def get_moment_retriever():
+    return CGDETRPredictor(device="cpu")
+
+
 if __name__ == "__main__":
     # Set the title of the app
     st.title("SwissADT: Multimodal Audio Description Translation")
 
     # Get the path of the video file
-    video_file = st.file_uploader("Upload a video file", type=["mp4", "mov", "avi"])
+    video_file = st.file_uploader(
+        "Upload a video file",
+        type=["mp4", "mov", "avi"],
+    )
 
     # Get the Audio description
     audio_description = st.text_input("Enter the audio description")
@@ -64,7 +72,7 @@ if __name__ == "__main__":
 
         with st.spinner("Retrieve moment ..."):
             # Find the moment
-            model = CGDETRPredictor(device="cpu")
+            model = get_moment_retriever()
             predictions = model.localize_moment(
                 video_path=vid_file, query_list=[audio_description]
             )
@@ -100,6 +108,13 @@ if __name__ == "__main__":
 
         # Translate the audio description
         st.divider()
+
+        if not api_key:
+            st.error(
+                "Please set the OPENAI_API_KEY environment variable to use the translation feature."
+            )
+            st.stop()
+
         with st.spinner("Translating the audio description..."):
             translator = Translator(api_key=api_key)
             translated_description = translator.translate_segment(
