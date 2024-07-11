@@ -24,6 +24,9 @@ class CGDETRPredictor:
             ckpt_path = os.path.join(
                 os.path.dirname(__file__), "qvhighlights_onlyCLIP.ckpt"
             )
+        if not os.path.exists(ckpt_path):
+            raise FileNotFoundError(f"Checkpoint file not found: {ckpt_path}")
+
         self.clip_len = 2  # seconds
         self.device = device
         logging.info("Loading feature extractors...")
