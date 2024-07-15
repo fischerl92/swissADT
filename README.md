@@ -30,7 +30,9 @@ Run demo:
 OPENAI_API_KEY=<your_key> docker compose up
 ```
 
-## ☑️ LICENSE
+## LICENSE
+
+This project is licensed under the terms of the [CC-BY-NC-4.0](https://creativecommons.org/licenses/by-nc/4.0/) license.
 
 The code and model of the moment retrieval package (contents of folder `cgdetr`) are borrowed from [CGDETR](https://github.com/wjun0830/CGDETR.git);
 see their respective license headers for more details: 
