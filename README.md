@@ -31,4 +31,20 @@ OPENAI_API_KEY=<your_key> docker compose up
 ```
 
 ## ☑️ LICENSE
-The moment retrieval pipeline is borrowed from [CGDETR](https://github.com/wjun0830/CGDETR.git). We reorganized their code in the `cgdetr` package to make it installable.
+
+The code and model of the moment retrieval package (contents of folder `cgdetr`) are borrowed from [CGDETR](https://github.com/wjun0830/CGDETR.git);
+see their respective license headers for more details: 
+
+```txt
+MIT License
+CG-DETR (https://github.com/wjun0830/CGDETR)
+Copyright (c) 2023 WonJun Moon
+
+MIT License
+QD-DETR (https://github.com/wjun0830/QD-DETR)
+Copyright (c) 2022 WonJun Moon
+
+MIT License
+Moment-DETR (https://github.com/jayleicn/moment_detr)
+Copyright (c) 2021 Jie Lei
+```
