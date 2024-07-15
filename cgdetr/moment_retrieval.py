@@ -10,10 +10,7 @@ from .run_on_video.data_utils import ClipFeatureExtractor
 from .run_on_video.model_utils import build_inference_model
 from .utils.tensor_utils import pad_sequences_1d
 from .cg_detr.span_utils import span_cxw_to_xx
-from moviepy.video.io.VideoFileClip import VideoFileClip
 import torch.nn.functional as F
-
-from swiss_adt import save_subclip
 
 
 class CGDETRPredictor:
@@ -112,29 +109,4 @@ class CGDETRPredictor:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-
-    logging.info("Build models...")
-
-    cg_detr_predictor = CGDETRPredictor(
-        ckpt_path="qvhighlights_onlyCLIP.ckpt", device="cpu"
-    )
-
-    with open("../example/example.jsonl", "r") as file:
-        for line in file:
-            segment = json.loads(line)
-            # get frame from video and encode it
-            video_path = segment["video"]
-            query_text_list = [segment["audio_description"]]
-
-            logging.info(
-                f"For video: {video_path}\n find moment for query: {query_text_list}"
-            )
-            predictions = cg_detr_predictor.localize_moment(
-                video_path=video_path, query_list=query_text_list
-            )
-
-            moment = predictions[0]["pred_relevant_windows"][0]
-            save_subclip(
-                video_path, "../example/moment_ruedi.mp4", moment[0], moment[1]
-            )
+    pass

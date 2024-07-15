@@ -24,11 +24,14 @@ class Translator:
         api_key,
         model="gpt-4o",
         request_per_second=-1,
-        language_code=DEFAULT_LANGUAGE_CODES,
+        language_code=None,
     ):
         self.api_key = api_key
         self.requests_per_second = request_per_second
-        self.language_code = language_code
+        if language_code is None:
+            self.language_code = DEFAULT_LANGUAGE_CODES
+        else:
+            self.language_code = language_code
         self.model = model
 
     @backoff.on_exception(
