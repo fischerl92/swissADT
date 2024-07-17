@@ -11,6 +11,8 @@ pip install -e .
 
 ## Run Demo
 
+The pipeline uses the [OpenAI API](https://openai.com/api/). Set the environment variable `OPENAI_API_KEY` to your API key.
+
 ```
 OPENAI_API_KEY=<your_key> streamlit run app.py
 ```
