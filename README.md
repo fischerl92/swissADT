@@ -2,7 +2,7 @@
 
 
 ## Installation
-Check out the repository:
+Check out the repository. You need [git-lfs](https://git-lfs.com/) to download the moment retrieval model file.
 ```
 git clone https://github.com/fischerl92/swissADT.git
 cd swissADT
