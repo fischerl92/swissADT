@@ -1,5 +1,6 @@
 # swissADT
 
+<img src="logo.png" width="100">
 
 ## Installation
 Check out the repository. You need [git-lfs](https://git-lfs.com/) to download the moment retrieval model file.
