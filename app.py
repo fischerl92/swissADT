@@ -8,7 +8,13 @@ image = Image.open(image_directory)
 PAGE_CONFIG = {"page_title":"SwissADT", 
                "page_icon":image, 
                "layout":"centered", 
-               "initial_sidebar_state":"auto"}
+               "initial_sidebar_state":"auto",
+               "menu_items" : {
+                    'Get Help': 'https://www.youtube.com/',
+                    'About': """[SwissADT](https://github.com/fischerl92/swissADT/) System-Demo for EMNLP 2024
+                    """
+                }
+    }
 
 st.set_page_config(**PAGE_CONFIG)
 
