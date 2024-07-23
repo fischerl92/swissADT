@@ -1,5 +1,16 @@
 import streamlit as st
 import os
+from PIL import Image
+
+image_directory = os.path.join(os.path.dirname(__file__), "logo.png")
+image = Image.open(image_directory)
+
+PAGE_CONFIG = {"page_title":"SwissADT", 
+               "page_icon":image, 
+               "layout":"centered", 
+               "initial_sidebar_state":"auto"}
+
+st.set_page_config(**PAGE_CONFIG)
 
 from cgdetr import CGDETRPredictor
 from swiss_adt import save_subclip, extract_frames, Translator, encode_images
