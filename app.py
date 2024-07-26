@@ -10,7 +10,7 @@ PAGE_CONFIG = {"page_title":"SwissADT",
                "layout":"centered", 
                "initial_sidebar_state":"auto",
                "menu_items" : {
-                    'Get Help': 'https://www.youtube.com/',
+                    'Get Help': 'https://www.youtube.com/watch?v=5PQs8DscubU',
                     'About': """[SwissADT](https://github.com/fischerl92/swissADT/) System-Demo for EMNLP 2024
                     """
                 }
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     video_file = st.file_uploader(
         "Upload a video file",
         type=["mp4", "mov", "avi"],
+        help="The video must be longer than 2 seconds and shorter than 2 minutes and should include the moment that corresponds to your audio description segment.",
     )
 
     # Get the Audio description
