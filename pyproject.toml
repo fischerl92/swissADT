@@ -2,6 +2,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.poetry]
+name = "swissadt"
+version = "0.1.0"
+description = "A short description of the project"
+authors = ["Lukas Fischer <fischerl@cl.uzh.ch>"]
+
 [project]
 name = "swiss-adt"
 version = "0.0.1"
