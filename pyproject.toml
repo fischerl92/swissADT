@@ -1,32 +1,32 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
-[project]
+You could either switch to poetry by modifying pyproject.toml, or
+Ensure the environment respects the hatchling configuration by specifying the correct dependency manager.
+Option 1: Switching to Poetry
+To switch to poetry, modify your pyproject.toml as follows:
+
+toml
+Code kopieren
+[tool.poetry]
 name = "swiss-adt"
 version = "0.0.1"
-authors = [
- { name="Lukas Fischer", email="fischerl@cl.uzh.ch" }, 
- ]
 description = "Swiss ADT"
-readme = "README.md"
-classifiers = [ ]
-requires-python = ">=3.10"
-dependencies = [ 
-    "opencv-python==4.10.0.84",
-    "backoff==2.2.1",
-    "regex==2024.5.15",
-    "ftfy==6.2.0",
-    "ffmpeg-python==0.2.0",
-    "moviepy==1.0.3",
-    "numpy==2.0.0",
-    "openai==1.35.7",
-    "pillow==10.3.0",
-    "scipy==1.14.0",
-    "torch==2.3.1",
-    "torchvision==0.18.1",
-    "streamlit==1.36.0",
-    ]
+authors = ["Lukas Fischer <fischerl@cl.uzh.ch>"]
 
-[tool.hatch.build.targets.wheel]
+[tool.poetry.dependencies]
+python = ">=3.10"
+opencv-python = "4.10.0.84"
+backoff = "2.2.1"
+regex = "2024.5.15"
+ftfy = "6.2.0"
+ffmpeg-python = "0.2.0"
+moviepy = "1.0.3"
+numpy = "2.0.0"
+openai = "1.35.7"
+pillow = "10.3.0"
+scipy = "1.14.0"
+torch = "2.3.1"
+torchvision = "0.16.1"  # Update to match torch version
+streamlit = "1.36.0"
+
+[tool.poetry.build]
 packages = ["cgdetr", "swiss_adt"]
